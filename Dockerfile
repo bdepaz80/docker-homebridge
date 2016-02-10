@@ -33,8 +33,6 @@ RUN apt-get install --yes nodejs
 
 RUN useradd --create-home --home-dir /home/app --shell /bin/bash app
 
-#####SPECIFIC#####
-
 ##################################################
 # Install homebridge                             #
 ##################################################
@@ -66,7 +64,6 @@ CMD ["npm", "run", "start"]
 RUN echo "/home/app/homebridge/bin/homebridge" > /root/run.sh
 RUN chmod +x /root/run.sh
 
-# as we are using "docker -v" to keep the config outside of the container, the config MUST NOT be in the container
 RUN mkdir /root/.homebridge
 COPY config.json /root/.homebridge/config.json
 

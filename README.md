@@ -1,2 +1,8 @@
 # homebridge-docker
-Dockerfile for homebridge
+Trying to control Domoticz via Apple Siri voice control.
+
+Docker image running homebridge.
+
+TODO:
+- Still a problem with dbus and avahi-deamon not being started.
+- iOS still not able to detect homebridge, looks like a WLAN issue. 
