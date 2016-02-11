@@ -2,9 +2,6 @@ FROM debian:jessie
 #FROM resin/rpi-raspbian:jessie
 MAINTAINER Bert Depaz <bert@depaz.be>
 
-RUN apt-get update
-RUN apt-get upgrade
-
 ##################################################
 # Set environment variables                      #
 ##################################################
@@ -20,7 +17,23 @@ ENV TERM xterm
 # Install tools                                  #
 ##################################################
 
-RUN apt-get install -y curl wget git apt-transport-https python build-essential make g++ libavahi-compat-libdnssd-dev libkrb5-dev vim net-tools npm ansible avahi-daemon avahi-utils
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    apt-transport-https \
+    python \
+    build-essential \
+    make \
+    g++ \
+    libavahi-compat-libdnssd-dev \
+    libkrb5-dev \
+    vim \
+    net-tools \
+    npm \
+    ansible \
+    avahi-daemon \
+    avahi-utils
 RUN alias ll='ls -alG'
 RUN sed -i -e "s@#enable-dbus=no@enable-dbus=yes@" /etc/avahi/avahi-daemon.conf
 
@@ -61,17 +74,14 @@ VOLUME /var/run/dbus
 EXPOSE 5353 51826
 
 CMD ["npm", "run", "start"]
-RUN echo "/home/app/homebridge/bin/homebridge" > /root/run.sh
-RUN chmod +x /root/run.sh
 
 RUN mkdir /root/.homebridge
 COPY config.json /root/.homebridge/config.json
 
-#
-# TODO : Still a problem here: dbus and avahi-deamon have to be restarted manually.
-#
+# Problem for starting the daemon, had to reinstall.
 RUN apt-get install --reinstall avahi-daemon
-RUN /etc/init.d/dbus restart
-RUN service avahi-daemon start
+
+COPY run.sh /root/run.sh
+RUN chmod +x /root/run.sh
 
 CMD ["/root/run.sh"]
